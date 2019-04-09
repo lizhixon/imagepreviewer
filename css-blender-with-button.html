@@ -1,0 +1,137 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="orig-blend.css"/>
+        
+        <!-- checks for IE browser and pops up a box saying the blender won't work -->
+        <script>
+            // Get IE or Edge browser version
+            var version = detectIE();
+            
+            // add details to debug result
+            document.getElementById('details').innerHTML = window.navigator.userAgent;
+            
+            function detectIE() {
+                var ua = window.navigator.userAgent;
+                
+                var msie = ua.indexOf('MSIE ');
+                if (msie > 0) {
+                    alert("The previewer cannot function in Internet Explorer. Please use Google Chrome, Firefox, Opera, or Safari to preview your artwork.");
+                }
+                
+                var trident = ua.indexOf('Trident/');
+                if (trident > 0) {
+                    alert("The previewer cannot function in Internet Explorer. Please use Google Chrome, Firefox, Opera, or Safari to preview your artwork.");
+                }
+                
+                var edge = ua.indexOf('Edge/');
+                if (edge > 0) {
+                    alert("The previewer cannot function in Microsoft Edge. Please use Google Chrome, Firefox, Opera, or Safari to preview your artwork.");
+                }
+            }
+        </script>
+    </head>
+
+    <body onload="polycotton()">
+        <!--description of functionality-->
+        <p>To see how your artwork will look on your t-shirt, choose your t-shirt color using the t-shirt icon, then upload your artwork using the upload icon. The artwork will appear in the large preview box. Use the slider to select your fabric blend (cotton fibers do not accept sublimation dyes, so the image will appear faded on poly/cotton blends). Use the toggle switch to turn off the previewer and see your original artwork.</p>
+        <p><b>Accepted file type: JPG, PNG, GIF, BMP</b></p>
+
+        <!--color dropper icon to click for colpick-->
+        <div class="color icon">
+            <svg width="50" height="25" viewBox="0 0 300 300" class="drop-icon">
+                <path stroke="black" stroke-width="10" d="M183.9 13.5h-69.6 L0 56.2l28.3 64.9l28.5-12.9v178.2h184.7V108.2l28.5 12.9l30-64.9L183.9 13.5 Z M149.6 51.9 c-0.1 0-0.3 0-0.4 0c-18-0.2-32.5-14.9-32.5-32.9h65.8C182.5 37.2 167.7 51.9 149.6 51.9 Z"/>
+            </svg>
+            <input type="text" class="color-input" id="bgColor">
+        </div>
+
+        <!--upload file icon to click uploader-->
+        <div class="file icon">
+            <svg width="32" height="32" viewBox="0 0 40 40" class="upload-icon">
+                <path d="M14 18h4v-8h6l-8-8-8 8h6zM20 13.5v3.085l9.158 3.415-13.158 4.907-13.158-4.907 9.158-3.415v-3.085l-12 4.5v8l16 6 16-6v-8z"></path>
+            </svg>
+            <input class="file-input" type="file" onchange="previewFile();" multiple>
+        </div>
+
+        <!--This SVG tag is useless, but taking it out breaks the code. Legacy: this feature allowed text over the selected image-->
+        <svg class="text-icon" id="text-icon"></svg>
+        
+        <div id="poly-cotton-slider">
+            <div id="slider-align">
+                <div class="slider-style"><span id="poly-value"></span>%<br />Cotton</div>
+                <div class="slider-style" id="slider-style"><input type="range" id="poly-cotton-blend" value="100"></div>
+                <div class="slider-style"><span id="cotton-value"></span>%<br />Polyester</div>
+            </div>
+        </div>        
+        
+        <div id="toggle-switch">
+        OFF (normal) <label class="toggle-switch" onclick="toggleonoff()">
+            <input type="checkbox" id="toggle-check" checked>
+            <span class="toggle-slider"></span>
+            </label> ON (tshirt)
+        </div>
+
+        <div class="preview">
+            <!-- <div class="preview-img" ondrop="dropHandler(event);" id="preview"> -->
+            <div class="preview-img" contenteditable="true" id="preview">
+                <!--begin useless code, but taking it out breaks. Associated with legacy text-over-image feature-->
+                <div id="textOptions">
+                    <select name="mode" id="mixMode"></select>
+                </div>
+                <!--end of useless code-->
+            </div>
+        </div>
+
+		<script src="jquery.min.js"></script>
+		<script src="scripts.min.js"></script>
+
+        <script>
+            //global variables
+            var checkBox = document.getElementById("toggle-check").checked;
+            var slider = document.getElementById("poly-cotton-blend");
+            var preview = document.getElementById("preview");
+            var outputPoly = document.getElementById("poly-value");
+            var outputCotton = document.getElementById("cotton-value");
+            var opacityCotton = this.value/100;
+            
+            //sets onload polycotton value to 0/100
+            function polycotton() {
+                outputPoly.innerHTML = 0;
+                outputCotton.innerHTML = 100;
+            }
+
+            //takes the slider value and makes it the opacity value
+            slider.oninput = function() {
+                opacityCotton = this.value/100;
+                outputPoly.innerHTML = 100 - this.value;
+                outputCotton.innerHTML = this.value;
+                //only use opacityCotton when blend mode is applied
+                if (checkBox) {
+                    preview.style.opacity = opacityCotton;
+                }
+            }
+
+            //toggle switch function
+            function toggleonoff() {
+                checkBox = document.getElementById("toggle-check").checked;
+                //if toggle switch on, blend mode is applied
+                if (checkBox) {
+                    preview.style.backgroundBlendMode = "multiply";
+                    preview.style.opacity = opacityCotton;
+                }
+                //if toggle switch is off, blend mode is not applied – preview is normal artwork
+                else {
+                    preview.style.backgroundBlendMode = "normal";
+                    preview.style.opacity = 100;
+                }
+            }
+        </script>
+        
+        <script>
+            
+        </script>
+	</body>
+        
+	</body>
+</html>
